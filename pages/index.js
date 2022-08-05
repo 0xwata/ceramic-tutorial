@@ -80,8 +80,9 @@ function Home() {
 function RecordSetter() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  // const record = useViewerRecord("basicProfile");
-  const record = useViewerRecord("secondProfile");
+  const [tweet, setTweet] = useState([]);
+  const record = useViewerRecord("basicProfile");
+  // const record = useViewerRecord("secondProfile");
 
 
   console.log(record);
@@ -93,6 +94,13 @@ function RecordSetter() {
   const updateRecordDescription = async (description) => {
     await record.merge({
       description: description
+    })
+  }
+  const updateRecordTweet = async (tweet) => {
+    const currentTweets = record.content.tweets ? record.content.tweets : []
+    currentTweets.push(tweet)
+    await record.merge({
+      tweets: currentTweets
     })
   }
 
@@ -136,6 +144,25 @@ function RecordSetter() {
           className={styles.mt2}
         />
         <button onClick={() => updateRecordDescription(description)}>Update Description</button>
+
+        <input
+          type="text"
+          placeholder="Tweet"
+          value={tweet}
+          onChange={(e)=> setTweet(e.target.value)}
+          className={styles.mt2}
+        />
+        <button onClick={() => updateRecordTweet(tweet)}>Update Tweet</button>
+        <ul>
+          {record.content.tweets ? (
+            record.content.tweets.map((tweet, index) => (
+                <li key={index}>{tweet}</li>
+              )
+            )
+          ) : (
+            <li>no post</li>
+          )}
+        </ul>
       </div>
   );
 }
